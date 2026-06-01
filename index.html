@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dog Coat Care Quiz — Noush & Monty</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sage: #9BAF8E;
+    --sage-light: #C8D9C0;
+    --sage-pale: #EFF4EC;
+    --sand: #C4A882;
+    --sand-light: #DDD0BC;
+    --sand-pale: #F5F0E8;
+    --bark: #3D3530;
+    --bark-mid: #6B5E57;
+    --cream: #FAF8F4;
+    --white: #FFFFFF;
+    --text: #2C2420;
+    --text-mid: #6B5E57;
+    --text-light: #9E9189;
+    --border: rgba(61,53,48,0.12);
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ---- LAYOUT ---- */
+  .quiz-wrap {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+  }
+
+  .quiz-wrap::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 10% 20%, rgba(155,175,142,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 90% 80%, rgba(196,168,130,0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 3rem 3.5rem;
+    max-width: 560px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 2px 40px rgba(61,53,48,0.06), 0 1px 4px rgba(61,53,48,0.04);
+  }
+
+  /* ---- LOGO ---- */
+  .logo-area {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .logo-dog {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 0.75rem;
+    display: block;
+  }
+
+  .logo-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--bark);
+  }
+
+  .logo-divider {
+    width: 32px;
+    height: 1px;
+    background: var(--sand);
+    margin: 0.75rem auto 0;
+  }
+
+  /* ---- PROGRESS ---- */
+  .progress-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 2.5rem;
+    justify-content: center;
+  }
+
+  .progress-dot {
+    width: 28px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--border);
+    transition: background 0.4s ease;
+  }
+
+  .progress-dot.active { background: var(--sage); }
+  .progress-dot.done { background: var(--sage-light); }
+
+  /* ---- SCREENS ---- */
+  .screen { display: none; animation: fadeUp 0.45s ease both; }
+  .screen.visible { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---- QUESTION ---- */
+  .q-step {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .q-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.9rem;
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--bark);
+    margin-bottom: 0.6rem;
+  }
+
+  .q-sub {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  /* ---- OPTIONS ---- */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    background: var(--cream);
+    font-size: 0.9rem;
+    color: var(--text);
+    font-family: 'Jost', sans-serif;
+    text-align: left;
+    width: 100%;
+  }
+
+  .option:hover {
+    border-color: var(--sage);
+    background: var(--sage-pale);
+  }
+
+  .option.selected {
+    border-color: var(--sage);
+    background: var(--sage-pale);
+    color: var(--bark);
+  }
+
+  .option-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    width: 2rem;
+    text-align: center;
+  }
+
+  .option-text { flex: 1; }
+  .option-label { font-weight: 500; display: block; margin-bottom: 2px; }
+  .option-desc { font-size: 0.78rem; color: var(--text-light); }
+
+  .option-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .option.selected .option-check {
+    background: var(--sage);
+    border-color: var(--sage);
+  }
+
+  .option.selected .option-check::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+  }
+
+  /* ---- BUTTON ---- */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 14px;
+    background: var(--bark);
+    color: white;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    margin-top: 1.75rem;
+    transition: all 0.2s ease;
+  }
+
+  .btn:hover { background: var(--bark-mid); transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-mid);
+    border: 1px solid var(--border);
+    margin-top: 0.75rem;
+  }
+
+  .btn-ghost:hover { background: var(--cream); }
+
+  /* ---- INTRO ---- */
+  .intro-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--bark);
+    margin-bottom: 1rem;
+  }
+
+  .intro-headline em {
+    font-style: italic;
+    color: var(--sage);
+  }
+
+  .intro-body {
+    font-size: 0.9rem;
+    color: var(--text-mid);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+
+  .intro-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+
+  .tag {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--text-light);
+  }
+
+  /* ---- RESULT ---- */
+  .result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+
+  .result-badge::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--sage);
+  }
+
+  .result-product {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--bark);
+    margin-bottom: 0.4rem;
+  }
+
+  .result-scent {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    letter-spacing: 0.06em;
+    margin-bottom: 1.5rem;
+  }
+
+  .result-swatch {
+    width: 100%;
+    height: 140px;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-swatch-curly {
+    background: linear-gradient(135deg, #C4A882 0%, #DDD0BC 50%, #EDE5D8 100%);
+  }
+
+  .result-swatch-wavy {
+    background: linear-gradient(135deg, #9BAF8E 0%, #C8D9C0 50%, #DDE8D8 100%);
+  }
+
+  .result-swatch-straight {
+    background: linear-gradient(135deg, #A8B8C8 0%, #C8D8E8 50%, #E0EAF0 100%);
+  }
+
+  .result-swatch-double {
+    background: linear-gradient(135deg, #C8A870 0%, #E0C898 50%, #F0E0C0 100%);
+  }
+
+  .swatch-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: rgba(61,53,48,0.7);
+    letter-spacing: 0.05em;
+  }
+
+  .result-why {
+    font-size: 0.85rem;
+    color: var(--text-mid);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    background: var(--cream);
+    border-radius: 12px;
+    border-left: 3px solid var(--sage);
+  }
+
+  .result-why.sand-border { border-left-color: var(--sand); }
+
+  .benefits-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 1.75rem;
+  }
+
+  .benefits-list li {
+    font-size: 0.83rem;
+    color: var(--text-mid);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .benefits-list li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sage);
+    flex-shrink: 0;
+  }
+
+  .result-restart {
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--text-light);
+    margin-top: 1rem;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .result-restart:hover { color: var(--text-mid); }
+
+  /* ---- NAME INPUT ---- */
+  .name-input-wrap { margin-bottom: 1.5rem; }
+
+  .name-input-wrap label {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .name-input-wrap input {
+    width: 100%;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .name-input-wrap input:focus { border-color: var(--sage); }
+  .name-input-wrap input::placeholder { color: var(--text-light); }
+
+  @media (max-width: 600px) {
+    .card { padding: 2rem 1.5rem; border-radius: 20px; }
+    .intro-headline { font-size: 1.9rem; }
+    .q-title { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="quiz-wrap">
+  <div class="card">
+
+    <div class="logo-area">
+      <svg class="logo-dog" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 38 C18 38 14 36 12 32 C10 28 12 24 14 22 C12 20 11 16 13 14 C15 12 18 13 20 15 C22 13 25 12 28 12 C31 12 34 13 36 15 C38 13 41 12 43 14 C45 16 44 20 42 22 C44 24 46 28 44 32 C42 36 38 38 38 38 L38 44 C38 45.1 37.1 46 36 46 L20 46 C18.9 46 18 45.1 18 44 Z" stroke="#6B5E57" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+        <circle cx="22" cy="22" r="2" fill="#6B5E57"/>
+        <circle cx="34" cy="22" r="2" fill="#6B5E57"/>
+        <path d="M25 28 Q28 31 31 28" stroke="#6B5E57" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <path d="M14 22 C12 20 10 18 11 15" stroke="#6B5E57" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <path d="M42 22 C44 20 46 18 45 15" stroke="#6B5E57" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      </svg>
+      <div class="logo-name">Noush & Monty</div>
+      <div style="font-size:0.7rem;letter-spacing:0.12em;color:var(--text-light);margin-top:0.25rem;font-family:'Jost',sans-serif;">Dog Coat Care</div>
+      <div class="logo-divider"></div>
+    </div>
+
+    <!-- INTRO -->
+    <div class="screen visible" id="screen-intro">
+      <div class="intro-headline">Get your dog's <em>personalised</em> coat care guide</div>
+      <p class="intro-body">Every coat is different. Answer 5 quick questions and I'll tell you exactly what your dog's coat type needs — no generic advice, just the right routine for them.</p>
+      <div class="intro-tags">
+        <span class="tag">5 questions</span>
+        <span class="tag">Under 2 mins</span>
+        <span class="tag">Personalised result</span>
+      </div>
+      <div class="name-input-wrap">
+        <label>Your dog's name</label>
+        <input type="text" id="dog-name" placeholder="e.g. Rosie" maxlength="30">
+      </div>
+      <button class="btn" onclick="startQuiz()">Start the quiz →</button>
+    </div>
+
+    <!-- QUESTIONS -->
+    <div class="screen" id="screen-questions">
+      <div class="progress-bar" id="progress-bar"></div>
+      <div class="q-step" id="q-step">Question 1 of 5</div>
+      <div class="q-title" id="q-title"></div>
+      <div class="q-sub" id="q-sub"></div>
+      <div class="options" id="options-list"></div>
+      <button class="btn" id="btn-next" disabled onclick="nextQuestion()">Continue →</button>
+    </div>
+
+    <!-- RESULT -->
+    <div class="screen" id="screen-result">
+      <div class="result-badge" id="result-badge">Your match</div>
+      <div class="result-product" id="result-product"></div>
+      <div class="result-scent" id="result-scent"></div>
+      <div class="result-swatch" id="result-swatch">
+        <span class="swatch-label" id="swatch-label"></span>
+      </div>
+      <div class="result-why" id="result-why"></div>
+      <ul class="benefits-list" id="benefits-list"></ul>
+      <button class="btn" onclick="shopNow()">Shop now — 500ml</button>
+      <button class="btn btn-ghost" onclick="emailResult()">Email me my result</button>
+      <div class="result-restart" onclick="restartQuiz()">Retake the quiz</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    title: "What does your dog's coat look like?",
+    sub: "Look at the natural growth pattern when the coat is clean and dry.",
+    options: [
+      { icon: "🌀", label: "Tight curls or ringlets", desc: "Spiralled, bouncy curls close to the body", value: "curly", scores: { curly: 3 } },
+      { icon: "〰️", label: "Loose waves", desc: "Gentle S-shaped waves, not fully straight", value: "wavy", scores: { wavy: 3 } },
+      { icon: "➖", label: "Straight and smooth", desc: "Flat, uniform coat with little texture", value: "straight", scores: { straight: 3 } },
+      { icon: "🔲", label: "Dense and thick", desc: "Two layers — a fluffy undercoat beneath", value: "double", scores: { double: 3 } },
+    ]
+  },
+  {
+    title: "How does your dog's coat feel between washes?",
+    sub: "Think about day 3 or 4 after a bath.",
+    options: [
+      { icon: "💧", label: "Dry and frizzy", desc: "Prone to puffiness and flyaways", value: "dry", scores: { curly: 2, wavy: 1 } },
+      { icon: "✨", label: "Soft and manageable", desc: "Holds its shape well", value: "normal", scores: { wavy: 2, straight: 1 } },
+      { icon: "🫧", label: "Oily or heavy", desc: "Gets greasy faster than expected", value: "oily", scores: { straight: 2, double: 2 } },
+      { icon: "🍂", label: "Tangles easily", desc: "Mats if not brushed regularly", value: "tangles", scores: { curly: 2, double: 1 } },
+    ]
+  },
+  {
+    title: "What breed (or mix) is your dog?",
+    sub: "This helps us understand coat genetics.",
+    options: [
+      { icon: "🐩", label: "Poodle / Doodle mix", desc: "Cavoodle, Labradoodle, Spoodle etc.", value: "poodle", scores: { curly: 3 } },
+      { icon: "🦮", label: "Spaniel or Retriever", desc: "Cocker, Golden, Labrador etc.", value: "spaniel", scores: { wavy: 2, straight: 1 } },
+      { icon: "🐕", label: "Shepherd or Husky", desc: "German Shepherd, Malamute, Kelpie etc.", value: "shepherd", scores: { double: 3 } },
+      { icon: "🐾", label: "Other / Mixed breed", desc: "Not sure or a different breed", value: "other", scores: { wavy: 1, straight: 1 } },
+    ]
+  },
+  {
+    title: "What's your main grooming concern?",
+    sub: "Pick the one that matters most to you.",
+    options: [
+      { icon: "💦", label: "Moisture & frizz control", desc: "Want soft, defined, hydrated curls or waves", value: "moisture", scores: { curly: 2, wavy: 2 } },
+      { icon: "🌿", label: "Freshness & odour", desc: "Needs to smell clean for longer", value: "fresh", scores: { straight: 2, double: 2 } },
+      { icon: "🪮", label: "Detangling & shine", desc: "Wants knot-free, glossy coat", value: "detangle", scores: { wavy: 2, curly: 1 } },
+      { icon: "🛡️", label: "Volume & shedding", desc: "Managing heavy shed or flat coat", value: "volume", scores: { double: 2, straight: 1 } },
+    ]
+  },
+  {
+    title: "How active is your dog outdoors?",
+    sub: "This affects how much product buildup they'll get.",
+    options: [
+      { icon: "🏃", label: "Very active", desc: "Daily runs, swims, beach or bush walks", value: "veryactive", scores: { double: 1, straight: 1 } },
+      { icon: "🐕", label: "Moderately active", desc: "Regular walks, occasional adventures", value: "active", scores: { wavy: 1, curly: 1 } },
+      { icon: "🛋️", label: "Indoor / low activity", desc: "Mostly at home, short gentle walks", value: "low", scores: { curly: 1, wavy: 1 } },
+    ]
+  }
+];
+
+const results = {
+  curly: {
+    product: "Curly Coat Shampoo",
+    scent: "Lemon Myrtle & Vanilla · Lightweight Hydration",
+    swatchClass: "result-swatch-curly",
+    swatchLabel: "Warm Sand",
+    comingSoon: false,
+    why: "Curly coats need moisture above everything else. Your dog's coat type is prone to dryness and frizz — the right curly coat formula delivers lightweight hydration that defines curls without weighing them down.",
+    benefits: [
+      "Defines and softens tight curls",
+      "Controls frizz with botanical humectants",
+      "Lemon Myrtle's natural antibacterial keeps the scalp healthy",
+      "Vanilla extract smooths the cuticle for shine",
+      "pH-balanced for curly coat porosity"
+    ]
+  },
+  wavy: {
+    product: "Wavy Coat Shampoo",
+    scent: "Lemon Myrtle & Vanilla · Lightweight Hydration",
+    swatchClass: "result-swatch-wavy",
+    swatchLabel: "Sage Green",
+    comingSoon: false,
+    why: "Wavy coats sit between straight and curly — they need balanced care that enhances the wave pattern without stripping natural oils. The right wavy coat formula adds just enough moisture to keep waves defined and manageable.",
+    benefits: [
+      "Enhances natural wave definition",
+      "Balances moisture without weighing coat down",
+      "Bergamot brightens and lifts the coat",
+      "Cedarwood soothes any scalp sensitivity",
+      "Reduces brushing time and tangles"
+    ]
+  },
+  straight: {
+    product: "Wavy Coat Shampoo",
+    scent: "Lemon Myrtle & Vanilla · Lightweight Hydration",
+    swatchClass: "result-swatch-wavy",
+    swatchLabel: "Sage Green",
+    comingSoon: false,
+    comingSoonNote: "A dedicated Smooth Coat guide is coming soon — watch this space. In the meantime, the Wavy Coat routine is the closest match for your dog's coat, delivering gentle cleansing and lightweight moisture without buildup.",
+    why: "Straight coats are closer to wavy in their moisture needs than you might think — both benefit from lightweight hydration without heavy oils. The Wavy Coat routine is your best match right now.",
+    benefits: [
+      "Gentle cleanse without stripping natural oils",
+      "Lightweight — won't weigh down fine coats",
+      "Lemon Myrtle keeps the coat fresh for longer",
+      "Leaves coat soft and manageable",
+      "Safe for regular washing"
+    ]
+  },
+  double: {
+    product: "Curly Coat Shampoo",
+    scent: "Lemon Myrtle & Vanilla · Lightweight Hydration",
+    swatchClass: "result-swatch-curly",
+    swatchLabel: "Warm Sand",
+    comingSoon: false,
+    comingSoonNote: "A dedicated Double Coat guide is coming soon — it'll cover both coat layers properly. For now, the Curly Coat routine's deep hydration approach is the best available match for your dog's dense coat.",
+    why: "Double coats need a routine that works through both the outer guard hairs and the dense undercoat. The Curly Coat routine's rich botanical approach is your best match right now — designed for dense, textured coats that need serious moisture.",
+    benefits: [
+      "Deep botanical hydration for thick coats",
+      "Lemon Myrtle keeps the undercoat fresh",
+      "Vanilla extract softens coarse outer hairs",
+      "pH-balanced for sensitive skin beneath dense coats",
+      "Rinses clean without residue"
+    ]
+  }
+};
+
+let dogName = "your dog";
+let currentQ = 0;
+let answers = [];
+let scores = { curly: 0, wavy: 0, straight: 0, double: 0 };
+let selectedOption = null;
+
+function startQuiz() {
+  const nameInput = document.getElementById('dog-name').value.trim();
+  if (nameInput) dogName = nameInput;
+  showScreen('screen-questions');
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
+  document.getElementById(id).classList.add('visible');
+}
+
+function renderProgress() {
+  const bar = document.getElementById('progress-bar');
+  bar.innerHTML = '';
+  for (let i = 0; i < questions.length; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot' + (i < currentQ ? ' done' : i === currentQ ? ' active' : '');
+    bar.appendChild(dot);
+  }
+}
+
+function renderQuestion() {
+  selectedOption = null;
+  const q = questions[currentQ];
+  document.getElementById('q-step').textContent = `Question ${currentQ + 1} of ${questions.length}`;
+  document.getElementById('q-title').textContent = q.title.replace('your dog', dogName !== "your dog" ? dogName + "'s" : "your dog's").replace("your dog's", dogName !== "your dog" ? dogName + "'s" : "your dog's");
+  document.getElementById('q-sub').textContent = q.sub;
+  document.getElementById('btn-next').disabled = true;
+  renderProgress();
+
+  const list = document.getElementById('options-list');
+  list.innerHTML = '';
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `
+      <span class="option-icon">${opt.icon}</span>
+      <span class="option-text">
+        <span class="option-label">${opt.label}</span>
+        <span class="option-desc">${opt.desc}</span>
+      </span>
+      <span class="option-check"></span>
+    `;
+    btn.addEventListener('click', () => selectOption(btn, opt, idx));
+    list.appendChild(btn);
+  });
+}
+
+function selectOption(btn, opt, idx) {
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedOption = opt;
+  document.getElementById('btn-next').disabled = false;
+}
+
+function nextQuestion() {
+  if (!selectedOption) return;
+  Object.entries(selectedOption.scores).forEach(([key, val]) => {
+    scores[key] += val;
+  });
+  answers.push(selectedOption.value);
+  currentQ++;
+  if (currentQ >= questions.length) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  const winner = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+  const r = results[winner];
+  const isRedirected = winner === 'straight' || winner === 'double';
+
+  document.getElementById('result-badge').textContent = `${dogName !== "your dog" ? dogName + "'s" : "Your"} match`;
+  document.getElementById('result-product').textContent = r.product;
+  document.getElementById('result-scent').textContent = r.scent;
+
+  const swatch = document.getElementById('result-swatch');
+  swatch.className = 'result-swatch ' + r.swatchClass;
+  document.getElementById('swatch-label').textContent = r.swatchLabel;
+
+  const why = document.getElementById('result-why');
+  if (isRedirected && r.comingSoonNote) {
+    why.innerHTML = `<strong style="display:block;margin-bottom:6px;font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--sand);">Coming soon for your coat type</strong>${r.comingSoonNote}`;
+    why.classList.add('sand-border');
+  } else {
+    why.textContent = r.why;
+    if (winner === 'wavy') why.classList.add('sand-border');
+  }
+
+  const benefitsList = document.getElementById('benefits-list');
+  benefitsList.innerHTML = r.benefits.map(b => `<li>${b}</li>`).join('');
+
+  const shopBtn = document.querySelector('#screen-result .btn:not(.btn-ghost)');
+  shopBtn.textContent = isRedirected ? 'See closest coat care routine' : 'See full coat care routine';
+
+  const emailBtn = document.querySelector('#screen-result .btn.btn-ghost');
+  emailBtn.textContent = isRedirected ? 'Notify me when my guide is ready' : 'Email me my result';
+
+  showScreen('screen-result');
+}
+
+function shopNow() {
+  alert("🐾 Full coat care guides coming soon — follow @groodlemumnoush on Instagram for tips!");
+}
+
+function emailResult() {
+  alert("🌿 Email capture coming soon!");
+}
+
+function restartQuiz() {
+  currentQ = 0;
+  answers = [];
+  scores = { curly: 0, wavy: 0, straight: 0, double: 0 };
+  selectedOption = null;
+  dogName = "your dog";
+  document.getElementById('dog-name').value = '';
+  showScreen('screen-intro');
+}
+</script>
+</body>
+</html>

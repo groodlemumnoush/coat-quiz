@@ -411,6 +411,85 @@
 
   .result-restart:hover { color: var(--text-mid); }
 
+  /* ---- CARE GUIDE ---- */
+  .care-guide { margin-bottom: 1.5rem; }
+
+  .care-section {
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .care-section-title {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+  }
+
+  .care-section-value {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--bark);
+    margin-bottom: 0.25rem;
+  }
+
+  .care-section-desc {
+    font-size: 0.78rem;
+    color: var(--text-mid);
+    line-height: 1.7;
+  }
+
+  .care-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .pro-tips {
+    background: var(--sage-pale);
+    border-left: 3px solid var(--sage);
+    border-radius: 0 12px 12px 0;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .pro-tips-title {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+  }
+
+  .pro-tips ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pro-tips ul li {
+    font-size: 0.8rem;
+    color: var(--bark-mid);
+    line-height: 1.6;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .pro-tips ul li::before {
+    content: '🌿';
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
   /* ---- NAME INPUT ---- */
   .name-input-wrap { margin-bottom: 1.5rem; }
 
@@ -488,16 +567,46 @@
 
     <!-- RESULT -->
     <div class="screen" id="screen-result">
-      <div class="result-badge" id="result-badge">Your match</div>
+      <div class="result-badge" id="result-badge">Your result</div>
       <div class="result-product" id="result-product"></div>
       <div class="result-scent" id="result-scent"></div>
       <div class="result-swatch" id="result-swatch">
         <span class="swatch-label" id="swatch-label"></span>
       </div>
       <div class="result-why" id="result-why"></div>
-      <ul class="benefits-list" id="benefits-list"></ul>
-      <button class="btn" onclick="shopNow()">Shop now — 500ml</button>
-      <button class="btn btn-ghost" onclick="emailResult()">Email me my result</button>
+
+      <div class="care-guide" id="care-guide">
+        <div class="care-grid">
+          <div class="care-section">
+            <div class="care-section-title">🛁 Wash frequency</div>
+            <div class="care-section-value" id="care-wash-freq"></div>
+            <div class="care-section-desc" id="care-wash-desc"></div>
+          </div>
+          <div class="care-section">
+            <div class="care-section-title">🪮 Brush frequency</div>
+            <div class="care-section-value" id="care-brush-freq"></div>
+            <div class="care-section-desc" id="care-brush-desc"></div>
+          </div>
+        </div>
+        <div class="care-section">
+          <div class="care-section-title">🧴 Shampoo type</div>
+          <div class="care-section-value" id="care-shampoo"></div>
+          <div class="care-section-desc" id="care-shampoo-desc"></div>
+        </div>
+        <div class="care-section">
+          <div class="care-section-title">💧 Conditioner</div>
+          <div class="care-section-value" id="care-conditioner"></div>
+          <div class="care-section-desc" id="care-conditioner-desc"></div>
+        </div>
+      </div>
+
+      <div class="pro-tips">
+        <div class="pro-tips-title">Noush's pro tips for your coat type</div>
+        <ul id="pro-tips-list"></ul>
+      </div>
+
+      <button class="btn" onclick="shopNow()">📲 Follow for more coat tips</button>
+      <button class="btn btn-ghost" onclick="emailResult()">📧 Email me my guide</button>
       <div class="result-restart" onclick="restartQuiz()">Retake the quiz</div>
     </div>
 
@@ -563,14 +672,20 @@ const results = {
     scent: "Deep Hydration · Frizz Control · Curl Definition",
     swatchClass: "result-swatch-curly",
     swatchLabel: "Curly Coat",
-    comingSoon: false,
-    why: "Curly coats need moisture above everything else. Your dog's coat is prone to dryness and frizz because the spiral shape stops natural oils travelling down the hair shaft. The right routine focuses on deep hydration, gentle cleansing and curl definition.",
-    benefits: [
-      "Defines and softens tight curls",
-      "Controls frizz with botanical humectants",
-      "Lemon Myrtle's natural antibacterial keeps the scalp healthy",
-      "Vanilla extract smooths the cuticle for shine",
-      "pH-balanced for curly coat porosity"
+    why: "Curly coats are the most high-maintenance coat type — but with the right routine they're absolutely beautiful. The spiral structure means natural oils can't travel down the hair shaft easily, so moisture has to come from the outside in. Get this right and you'll have soft, defined, frizz-free curls.",
+    washFreq: "Every 2–3 weeks",
+    washDesc: "Washing too often strips the natural oils curly coats desperately need. Unless your dog has been swimming or rolled in something, stick to every 2–3 weeks.",
+    brushFreq: "Every 2–3 days",
+    brushDesc: "Curly coats mat quickly if left unbrushed. Use a slicker brush and work section by section, always brushing right down to the skin — not just the surface.",
+    shampoo: "Moisturising / Hydrating Shampoo",
+    shampooDesc: "Look for shampoos with hydrating botanicals — ingredients like aloe vera, oat extract or natural oils. Avoid anything with sulphates (SLS) which will strip moisture and cause frizz. Always dilute before applying.",
+    conditioner: "Yes — every single wash",
+    conditionerDesc: "Conditioner is non-negotiable for curly coats. Use a moisturising or detangling conditioner, leave it on for 2–3 minutes, then rinse thoroughly. A leave-in conditioner spray between washes also helps maintain moisture.",
+    tips: [
+      "Never rub dry with a towel — squeeze and press gently with a microfibre towel to avoid frizz",
+      "Dilute your shampoo 1:5 with water before applying for even coverage and no product buildup",
+      "Brush before bathing, never after — wet curls are fragile and brushing them causes breakage",
+      "Use a diffuser on low heat to dry — never blast with high heat which destroys curl definition"
     ]
   },
   wavy: {
@@ -578,46 +693,62 @@ const results = {
     scent: "Lightweight Hydration · Wave Definition · Detangling",
     swatchClass: "result-swatch-wavy",
     swatchLabel: "Wavy Coat",
-    comingSoon: false,
-    why: "Wavy coats sit between straight and curly — they need balanced care that enhances the wave pattern without stripping natural oils. The right routine adds just enough moisture to keep waves defined and manageable without weighing them down.",
-    benefits: [
-      "Enhances natural wave definition",
-      "Balances moisture without weighing coat down",
-      "Bergamot brightens and lifts the coat",
-      "Cedarwood soothes any scalp sensitivity",
-      "Reduces brushing time and tangles"
+    why: "Wavy coats are the sweet spot — more texture than straight but less demanding than curly. They need balanced care that enhances the wave without weighing it down or stripping its natural oils. Get the routine right and wavy coats are gorgeous and easy to maintain.",
+    washFreq: "Every 3–4 weeks",
+    washDesc: "Wavy coats hold their natural oils better than curly coats so they don't need washing as frequently. Over-washing will flatten the wave pattern and dry out the skin.",
+    brushFreq: "Every 3–4 days",
+    brushDesc: "Wavy coats are prone to tangles behind the ears, under the collar and around the legs. Focus on these areas first with a slicker brush, then do a full brush-through.",
+    shampoo: "Balancing / Lightweight Hydrating Shampoo",
+    shampooDesc: "You want a shampoo that cleanses thoroughly without being too heavy or too stripping. Look for natural botanical ingredients and avoid heavy oils that will weigh the wave down. Dilute before applying.",
+    conditioner: "Yes — every wash",
+    conditionerDesc: "A lightweight conditioner used every wash keeps the wave defined and reduces brushing time significantly. Avoid heavy or thick conditioners which will flatten the wave — look for something light and rinse-out.",
+    tips: [
+      "Brush before bathing not after — this removes loose tangles before they tighten in water",
+      "Rinse thoroughly — wavy coats can hold product residue which builds up and dulls the coat",
+      "A detangling spray between washes is your best friend for quick brush-outs",
+      "Towel dry by squeezing not rubbing — rubbing roughens the cuticle and causes frizz at the wave"
     ]
   },
   straight: {
     product: "Your dog has a Straight Coat ➖",
-    scent: "Gentle Cleansing · Lightweight Moisture · Freshness",
-    swatchClass: "result-swatch-wavy",
+    scent: "Gentle Cleansing · Shine · Freshness",
+    swatchClass: "result-swatch-straight",
     swatchLabel: "Straight Coat",
-    comingSoon: false,
-    comingSoonNote: "A dedicated Smooth Coat guide is coming soon — watch this space. In the meantime, the Wavy Coat routine is the closest match for your dog's coat, delivering gentle cleansing and lightweight moisture without buildup.",
-    why: "Straight coats are closer to wavy in their moisture needs than you might think — both benefit from lightweight hydration without heavy oils. The Wavy Coat routine is your best match right now.",
-    benefits: [
-      "Gentle cleanse without stripping natural oils",
-      "Lightweight — won't weigh down fine coats",
-      "Lemon Myrtle keeps the coat fresh for longer",
-      "Leaves coat soft and manageable",
-      "Safe for regular washing"
+    why: "Straight coats are the lowest maintenance coat type — natural oils travel easily down the hair shaft keeping the coat naturally conditioned. The main challenge is that this also means oils and dirt accumulate faster, so freshness and gentle cleansing are the priorities.",
+    washFreq: "Every 4–6 weeks",
+    washDesc: "Straight coats stay cleaner longer than other coat types but can get greasy faster. If your dog is very active or swims often, you may need to wash more frequently — every 3–4 weeks.",
+    brushFreq: "Once a week",
+    brushDesc: "Straight coats are easy to maintain with a weekly brush-through using a bristle brush. This distributes natural oils along the hair shaft and keeps the coat glossy.",
+    shampoo: "Clarifying or Gentle All-Rounder Shampoo",
+    shampooDesc: "Straight coats benefit from a gentle clarifying shampoo that removes oil and dirt buildup without over-stripping. Look for fresh botanical ingredients like lemon myrtle or tea tree — avoid heavy moisturising shampoos which will make the coat look flat and greasy.",
+    conditioner: "Optional — light use only",
+    conditionerDesc: "Straight coats don't always need conditioner as the natural oils do the job. If you do use one, choose a very lightweight rinse-out conditioner and use sparingly — too much will make the coat look greasy and flat.",
+    tips: [
+      "A weekly brush-through with a bristle brush distributes natural oils and keeps the coat naturally shiny",
+      "If the coat looks greasy between washes, a dry shampoo for dogs is a great option",
+      "Straight coats show dirt and debris easily — a quick wipe-down with a damp cloth after walks keeps them fresher for longer",
+      "Avoid heavy conditioning treatments — straight coats don't absorb them well and it just sits on top"
     ]
   },
   double: {
     product: "Your dog has a Double Coat 🔲",
     scent: "Deep Nourishment · Undercoat Care · Shedding Control",
-    swatchClass: "result-swatch-curly",
+    swatchClass: "result-swatch-double",
     swatchLabel: "Double Coat",
-    comingSoon: false,
-    comingSoonNote: "A dedicated Double Coat guide is coming soon — it'll cover both coat layers properly. For now, the Curly Coat routine's deep hydration approach is the best available match for your dog's dense coat.",
-    why: "Double coats need a routine that works through both the outer guard hairs and the dense undercoat. The Curly Coat routine's rich botanical approach is your best match right now — designed for dense, textured coats that need serious moisture.",
-    benefits: [
-      "Deep botanical hydration for thick coats",
-      "Lemon Myrtle keeps the undercoat fresh",
-      "Vanilla extract softens coarse outer hairs",
-      "pH-balanced for sensitive skin beneath dense coats",
-      "Rinses clean without residue"
+    why: "Double coats are two coats in one — a harsh outer layer of guard hairs protecting a dense, soft undercoat underneath. They require a routine that penetrates both layers, manages heavy shedding and keeps the skin healthy underneath all that fur.",
+    washFreq: "Every 4–8 weeks",
+    washDesc: "Double coats are designed to protect your dog from the elements — washing too often disrupts this natural function. However, during heavy shedding seasons (spring and autumn) you may want to wash and blow-out more frequently to remove loose undercoat.",
+    brushFreq: "3–4 times per week",
+    brushDesc: "Double coats shed constantly and mat badly if not brushed regularly. Use an undercoat rake or de-shedding brush to get through to the undercoat, not just the surface. During shedding season, daily brushing is recommended.",
+    shampoo: "De-shedding or Nourishing Shampoo",
+    shampooDesc: "Look for shampoos that help loosen the undercoat and nourish the skin underneath — ingredients like omega oils, oat extract or natural botanicals work well. Avoid anything too heavy that will mat the guard hairs together.",
+    conditioner: "Yes — undercoat focused",
+    conditionerDesc: "A conditioning treatment helps loosen the undercoat making it easier to brush out after bathing. Leave it on for 3–5 minutes and rinse thoroughly. A de-shedding conditioner is ideal during heavy shed periods.",
+    tips: [
+      "Never shave a double coat — it permanently damages the coat structure and removes their natural temperature regulation",
+      "Blow-drying while brushing (force drying) is the most effective way to remove loose undercoat and prevent matting",
+      "The undercoat mats first — use an undercoat rake to check beneath the surface regularly, not just the outer coat",
+      "During shedding season, a professional groomer blow-out every 4–6 weeks can significantly reduce the amount of hair in your home"
     ]
   }
 };
@@ -705,9 +836,9 @@ function nextQuestion() {
 function showResult() {
   const winner = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
   const r = results[winner];
-  const isRedirected = winner === 'straight' || winner === 'double';
+  const name = dogName !== "your dog" ? dogName : "Your dog";
 
-  document.getElementById('result-badge').textContent = `${dogName !== "your dog" ? dogName + "'s" : "Your"} match`;
+  document.getElementById('result-badge').textContent = `${name}'s personalised coat guide`;
   document.getElementById('result-product').textContent = r.product;
   document.getElementById('result-scent').textContent = r.scent;
 
@@ -716,22 +847,22 @@ function showResult() {
   document.getElementById('swatch-label').textContent = r.swatchLabel;
 
   const why = document.getElementById('result-why');
-  if (isRedirected && r.comingSoonNote) {
-    why.innerHTML = `<strong style="display:block;margin-bottom:6px;font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--sand);">Coming soon for your coat type</strong>${r.comingSoonNote}`;
-    why.classList.add('sand-border');
-  } else {
-    why.textContent = r.why;
-    if (winner === 'wavy') why.classList.add('sand-border');
-  }
+  why.textContent = r.why;
+  why.className = 'result-why' + (winner === 'wavy' || winner === 'straight' ? ' sand-border' : '');
 
-  const benefitsList = document.getElementById('benefits-list');
-  benefitsList.innerHTML = r.benefits.map(b => `<li>${b}</li>`).join('');
+  // Care guide
+  document.getElementById('care-wash-freq').textContent = r.washFreq;
+  document.getElementById('care-wash-desc').textContent = r.washDesc;
+  document.getElementById('care-brush-freq').textContent = r.brushFreq;
+  document.getElementById('care-brush-desc').textContent = r.brushDesc;
+  document.getElementById('care-shampoo').textContent = r.shampoo;
+  document.getElementById('care-shampoo-desc').textContent = r.shampooDesc;
+  document.getElementById('care-conditioner').textContent = r.conditioner;
+  document.getElementById('care-conditioner-desc').textContent = r.conditionerDesc;
 
-  const shopBtn = document.querySelector('#screen-result .btn:not(.btn-ghost)');
-  shopBtn.textContent = '📲 Follow for coat care tips';
-
-  const emailBtn = document.querySelector('#screen-result .btn.btn-ghost');
-  emailBtn.textContent = '📧 Email me my results';
+  // Pro tips
+  const tipsList = document.getElementById('pro-tips-list');
+  tipsList.innerHTML = r.tips.map(t => `<li>${t}</li>`).join('');
 
   showScreen('screen-result');
 }

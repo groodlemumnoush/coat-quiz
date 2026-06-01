@@ -560,12 +560,12 @@ const questions = [
 
 const results = {
   curly: {
-    product: "Curly Coat Shampoo",
-    scent: "Lemon Myrtle & Vanilla · Lightweight Hydration",
+    product: "Your dog has a Curly Coat 🌀",
+    scent: "Deep Hydration · Frizz Control · Curl Definition",
     swatchClass: "result-swatch-curly",
-    swatchLabel: "Warm Sand",
+    swatchLabel: "Curly Coat",
     comingSoon: false,
-    why: "Curly coats need moisture above everything else. Your dog's coat type is prone to dryness and frizz — the right curly coat formula delivers lightweight hydration that defines curls without weighing them down.",
+    why: "Curly coats need moisture above everything else. Your dog's coat is prone to dryness and frizz because the spiral shape stops natural oils travelling down the hair shaft. The right routine focuses on deep hydration, gentle cleansing and curl definition.",
     benefits: [
       "Defines and softens tight curls",
       "Controls frizz with botanical humectants",
@@ -575,12 +575,12 @@ const results = {
     ]
   },
   wavy: {
-    product: "Wavy Coat Shampoo",
-    scent: "Lemon Myrtle & Vanilla · Lightweight Hydration",
+    product: "Your dog has a Wavy Coat 〰️",
+    scent: "Lightweight Hydration · Wave Definition · Detangling",
     swatchClass: "result-swatch-wavy",
-    swatchLabel: "Sage Green",
+    swatchLabel: "Wavy Coat",
     comingSoon: false,
-    why: "Wavy coats sit between straight and curly — they need balanced care that enhances the wave pattern without stripping natural oils. The right wavy coat formula adds just enough moisture to keep waves defined and manageable.",
+    why: "Wavy coats sit between straight and curly — they need balanced care that enhances the wave pattern without stripping natural oils. The right routine adds just enough moisture to keep waves defined and manageable without weighing them down.",
     benefits: [
       "Enhances natural wave definition",
       "Balances moisture without weighing coat down",
@@ -590,10 +590,10 @@ const results = {
     ]
   },
   straight: {
-    product: "Wavy Coat Shampoo",
-    scent: "Lemon Myrtle & Vanilla · Lightweight Hydration",
+    product: "Your dog has a Straight Coat ➖",
+    scent: "Gentle Cleansing · Lightweight Moisture · Freshness",
     swatchClass: "result-swatch-wavy",
-    swatchLabel: "Sage Green",
+    swatchLabel: "Straight Coat",
     comingSoon: false,
     comingSoonNote: "A dedicated Smooth Coat guide is coming soon — watch this space. In the meantime, the Wavy Coat routine is the closest match for your dog's coat, delivering gentle cleansing and lightweight moisture without buildup.",
     why: "Straight coats are closer to wavy in their moisture needs than you might think — both benefit from lightweight hydration without heavy oils. The Wavy Coat routine is your best match right now.",
@@ -606,10 +606,10 @@ const results = {
     ]
   },
   double: {
-    product: "Curly Coat Shampoo",
-    scent: "Lemon Myrtle & Vanilla · Lightweight Hydration",
+    product: "Your dog has a Double Coat 🔲",
+    scent: "Deep Nourishment · Undercoat Care · Shedding Control",
     swatchClass: "result-swatch-curly",
-    swatchLabel: "Warm Sand",
+    swatchLabel: "Double Coat",
     comingSoon: false,
     comingSoonNote: "A dedicated Double Coat guide is coming soon — it'll cover both coat layers properly. For now, the Curly Coat routine's deep hydration approach is the best available match for your dog's dense coat.",
     why: "Double coats need a routine that works through both the outer guard hairs and the dense undercoat. The Curly Coat routine's rich botanical approach is your best match right now — designed for dense, textured coats that need serious moisture.",
@@ -725,20 +725,20 @@ function showResult() {
   benefitsList.innerHTML = r.benefits.map(b => `<li>${b}</li>`).join('');
 
   const shopBtn = document.querySelector('#screen-result .btn:not(.btn-ghost)');
-  shopBtn.textContent = isRedirected ? 'See closest coat care routine' : 'See full coat care routine';
+  shopBtn.textContent = '📲 Follow for coat care tips';
 
   const emailBtn = document.querySelector('#screen-result .btn.btn-ghost');
-  emailBtn.textContent = isRedirected ? 'Notify me when my guide is ready' : 'Email me my result';
+  emailBtn.textContent = '📧 Email me my results';
 
   showScreen('screen-result');
 }
 
 function shopNow() {
-  alert("🐾 Full coat care guides coming soon — follow @groodlemumnoush on Instagram for tips!");
+  window.open('https://www.instagram.com/groodlemumnoush_/', '_blank');
 }
 
 function emailResult() {
-  alert("🌿 Email capture coming soon!");
+  alert("🌿 Coming soon — I'll be sending personalised coat care guides by email!");
 }
 
 function restartQuiz() {

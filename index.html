@@ -850,7 +850,6 @@ function showResult() {
   why.textContent = r.why;
   why.className = 'result-why' + (winner === 'wavy' || winner === 'straight' ? ' sand-border' : '');
 
-  // Care guide
   document.getElementById('care-wash-freq').textContent = r.washFreq;
   document.getElementById('care-wash-desc').textContent = r.washDesc;
   document.getElementById('care-brush-freq').textContent = r.brushFreq;
@@ -860,11 +859,61 @@ function showResult() {
   document.getElementById('care-conditioner').textContent = r.conditioner;
   document.getElementById('care-conditioner-desc').textContent = r.conditionerDesc;
 
-  // Pro tips
   const tipsList = document.getElementById('pro-tips-list');
   tipsList.innerHTML = r.tips.map(t => `<li>${t}</li>`).join('');
 
+  // Send to Klaviyo if email was provided
+  if (dogEmail) {
+    subscribeToKlaviyo(dogEmail, dogName, winner);
+  }
+
   showScreen('screen-result');
+}
+
+const KLAVIYO_API_KEY = 'pk_RJmskf_44f546cfb2ada5b28f2da4aa6f288e72b4';
+const KLAVIYO_LIST_ID = 'SEHwaG';
+
+async function subscribeToKlaviyo(email, dogName, coatType) {
+  try {
+    const response = await fetch('https://a.klaviyo.com/client/subscriptions/?company_id=RJmskf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'revision': '2023-12-15'
+      },
+      body: JSON.stringify({
+        data: {
+          type: 'subscription',
+          attributes: {
+            profile: {
+              data: {
+                type: 'profile',
+                attributes: {
+                  email: email,
+                  properties: {
+                    dog_name: dogName,
+                    coat_type: coatType
+                  }
+                }
+              }
+            }
+          },
+          relationships: {
+            list: {
+              data: {
+                type: 'list',
+                id: KLAVIYO_LIST_ID
+              }
+            }
+          }
+        }
+      })
+    });
+    return response.ok || response.status === 202;
+  } catch (err) {
+    console.error('Klaviyo error:', err);
+    return false;
+  }
 }
 
 function shopNow() {
@@ -872,7 +921,7 @@ function shopNow() {
 }
 
 function emailResult() {
-  alert("🌿 Coming soon — I'll be sending personalised coat care guides by email!");
+  alert("🌿 You're already on the list — I'll be in touch with more coat care tips soon!");
 }
 
 function restartQuiz() {

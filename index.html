@@ -73,19 +73,22 @@
     margin-bottom: 2.5rem;
   }
 
-  .logo-dog {
-    width: 56px;
-    height: 56px;
-    margin: 0 auto 0.75rem;
-    display: block;
-  }
-
   .logo-name {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.35rem;
+    font-size: 1.6rem;
     font-weight: 400;
     letter-spacing: 0.08em;
     color: var(--bark);
+  }
+
+  .logo-sub {
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-top: 0.3rem;
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
   }
 
   .logo-divider {
@@ -448,16 +451,8 @@
   <div class="card">
 
     <div class="logo-area">
-      <svg class="logo-dog" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M18 38 C18 38 14 36 12 32 C10 28 12 24 14 22 C12 20 11 16 13 14 C15 12 18 13 20 15 C22 13 25 12 28 12 C31 12 34 13 36 15 C38 13 41 12 43 14 C45 16 44 20 42 22 C44 24 46 28 44 32 C42 36 38 38 38 38 L38 44 C38 45.1 37.1 46 36 46 L20 46 C18.9 46 18 45.1 18 44 Z" stroke="#6B5E57" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
-        <circle cx="22" cy="22" r="2" fill="#6B5E57"/>
-        <circle cx="34" cy="22" r="2" fill="#6B5E57"/>
-        <path d="M25 28 Q28 31 31 28" stroke="#6B5E57" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-        <path d="M14 22 C12 20 10 18 11 15" stroke="#6B5E57" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-        <path d="M42 22 C44 20 46 18 45 15" stroke="#6B5E57" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-      </svg>
       <div class="logo-name">Noush & Monty</div>
-      <div style="font-size:0.7rem;letter-spacing:0.12em;color:var(--text-light);margin-top:0.25rem;font-family:'Jost',sans-serif;">Dog Coat Care</div>
+      <div class="logo-sub">Dog Coat Care</div>
       <div class="logo-divider"></div>
     </div>
 
@@ -474,7 +469,11 @@
         <label>Your dog's name</label>
         <input type="text" id="dog-name" placeholder="e.g. Rosie" maxlength="30">
       </div>
-      <button class="btn" onclick="startQuiz()">Start the quiz →</button>
+      <div class="name-input-wrap">
+        <label>Your email — I'll send your results here</label>
+        <input type="email" id="dog-owner-email" placeholder="e.g. hello@gmail.com">
+      </div>
+      <button class="btn" onclick="startQuiz()">Get my coat care guide →</button>
     </div>
 
     <!-- QUESTIONS -->
@@ -629,9 +628,13 @@ let answers = [];
 let scores = { curly: 0, wavy: 0, straight: 0, double: 0 };
 let selectedOption = null;
 
+let dogEmail = "";
+
 function startQuiz() {
   const nameInput = document.getElementById('dog-name').value.trim();
+  const emailInput = document.getElementById('dog-owner-email').value.trim();
   if (nameInput) dogName = nameInput;
+  if (emailInput) dogEmail = emailInput;
   showScreen('screen-questions');
   renderQuestion();
 }
@@ -747,7 +750,9 @@ function restartQuiz() {
   scores = { curly: 0, wavy: 0, straight: 0, double: 0 };
   selectedOption = null;
   dogName = "your dog";
+  dogEmail = "";
   document.getElementById('dog-name').value = '';
+  document.getElementById('dog-owner-email').value = '';
   showScreen('screen-intro');
 }
 </script>
